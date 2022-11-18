@@ -1,0 +1,3 @@
+[submodule "openicf"]
+	path = openicf
+	url = https://github.com/Evolveum/openicf.git
