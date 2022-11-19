@@ -4,8 +4,8 @@ import java.sql.*;
 
 public class Main {
     private static final String url = "jdbc:postgresql://localhost:5433/postgres";
-    private static final String user = "midpoint";
-    private static final String password = "y8cDv3pEDu6c69R7znm1";
+    private static final String user = "postgres";
+    private static final String password = "postgres";
 
     public static void main(String[] args) throws SQLException {
         Connection conn = DriverManager.getConnection(url, user, password);
