@@ -10,13 +10,21 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         Connection conn = DriverManager.getConnection(url, user, password);
 
-        // Setup function to call.
+        // create table
+        Statement createTable = conn.createStatement();
+        createTable.execute("Create Table accounts(id int primary key, name varchar, address text)");
+        createTable.close();
+
+        // insert data into accounts
+        // TODO
+
+        // Setup function to call
         Statement stmt = conn.createStatement();
         stmt.execute("CREATE OR REPLACE FUNCTION refcursorfunc() RETURNS refcursor AS '" +
                 " DECLARE " +
                 "    mycurs refcursor; " +
                 " BEGIN " +
-                "    OPEN mycurs FOR SELECT 1 UNION SELECT 2; " +
+                "    OPEN mycurs FOR SELECT * FROM accounts; " +
                 "    RETURN mycurs; " +
                 " END;' language plpgsql");
         stmt.close();
