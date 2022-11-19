@@ -2,7 +2,6 @@ package refcursorconnector;
 
 import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class RefCursorConfiguration extends AbstractConfiguration {
 
@@ -17,9 +16,9 @@ public class RefCursorConfiguration extends AbstractConfiguration {
         this.hostname = host;
     }
 
-    // TODO implement
+
     @Override
     public void validate() {
-        throw new NotImplementedException();
+        // TODO implement
     }
 }

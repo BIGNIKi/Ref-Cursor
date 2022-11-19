@@ -1,15 +1,15 @@
 version: "3.4"
 
 services:
-    postgres:
+    postgres-midpoint:
         image: postgres:13-alpine
-        container_name: postgres
+        container_name: postgres-midpoint
         environment:
             - POSTGRES_USER=midpoint
             - POSTGRES_DB=midpoint
             - POSTGRES_HOST_AUTH_METHOD=trust
         ports:
-            - 5432:5432
+            - "5432:5432"
         networks:
             - net
     midpoint:
@@ -22,11 +22,24 @@ services:
             - REPO_USER=midpoint
             - REPO_HOST=postgres
         ports:
-            - 8080:8080
+            - "8080:8080"
         networks:
             - net
         volumes:
             - ./midpoint/pio:/opt/midpoint-dirs-docker-entrypoint/:ro
+
+    postgres:
+        image: postgres:13-alpine
+        container_name: postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+            - POSTGRES_HOST_AUTH_METHOD=trust
+        ports:
+            - "5433:5432"
+        networks:
+            - net
 networks:
     net:
         driver: bridge
