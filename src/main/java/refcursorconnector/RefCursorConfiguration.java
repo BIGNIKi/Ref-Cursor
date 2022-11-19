@@ -21,4 +21,6 @@ public class RefCursorConfiguration extends AbstractConfiguration {
     public void validate() {
         // TODO implement
     }
+
+
 }
