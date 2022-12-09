@@ -1,14 +1,14 @@
 package refcursorconnector;
 
 import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.DeleteOp;
+import org.identityconnectors.framework.spi.operations.SyncOp;
+import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 import java.sql.*;
 import java.util.Set;
@@ -16,7 +16,7 @@ import java.util.Set;
 @ConnectorClass(
         displayNameKey = "REFCURSOR_CONNECTOR",
         configurationClass = RefCursorConfiguration.class)
-public class RefCursorConnector implements Connector, CreateOp {
+public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SyncOp {
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
     private RefCursorConfiguration configuration;
@@ -55,8 +55,14 @@ public class RefCursorConnector implements Connector, CreateOp {
 
         var cursor = getRefCursor();
 
+        // TODO Get ref cursor data (hardcode)
+//        while (cursor.next()) {
+//            cursor.getString(1)
+//        }
+
         try {
             openConnection();
+            // TODO place data to midpoint
             var pstmt = getConnection().getJbdcConnection().prepareStatement(sql, bld.getParams());
             pstmt.execute();
         } catch (SQLException e) {
@@ -83,7 +89,11 @@ public class RefCursorConnector implements Connector, CreateOp {
     }
 
     private void closeConnection() {
-        getConnection().closeConnection();
+        try {
+            getConnection().closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private ResultSet getRefCursor() {
@@ -108,5 +118,26 @@ public class RefCursorConnector implements Connector, CreateOp {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> set, OperationOptions operationOptions) {
+        // TODO Находим id шник из базы в мидпоинте и обновляем значения по этому id шнику
+        return null;
+    }
+
+    @Override
+    public void delete(ObjectClass objectClass, Uid uid, OperationOptions operationOptions) {
+        // TODO В мидпоинте удаляем те строки, которые в нашей базе помечены как deleted
+    }
+
+    @Override
+    public void sync(ObjectClass objectClass, SyncToken syncToken, SyncResultsHandler syncResultsHandler, OperationOptions operationOptions) {
+
+    }
+
+    @Override
+    public SyncToken getLatestSyncToken(ObjectClass objectClass) {
+        return null;
     }
 }
