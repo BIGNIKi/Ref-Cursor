@@ -118,6 +118,20 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     @Override
     public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> set, OperationOptions operationOptions) {
         // TODO Находим id шник из базы в мидпоинте и обновляем значения по этому id шнику
+
+        var cursor = getRefCursor();
+
+        try {
+            while(cursor.next()) {
+                var id = cursor.getInt(1);
+                var name = cursor.getString(2);
+
+                this.updateInMidpoint(id, name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
@@ -129,7 +143,9 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         try {
             while(cursor.next()) {
                 var isDeleted = cursor.getBoolean(3);
-                this.deleteInMidpoint(cursor.getInt(1));
+                if (isDeleted) {
+                    this.deleteInMidpoint(cursor.getInt(1));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -157,6 +173,27 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
             var jbdcConnection = getConnection().getJbdcConnection();
             var pstmt = jbdcConnection.prepareStatement(sql);
             pstmt.setString(1, userName);
+            pstmt.executeUpdate();
+            jbdcConnection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * Обновляет запись в мидпоинте
+     */
+    private void updateInMidpoint(Integer id, String userName) {
+        try {
+            openConnection();
+            // TODO place data to midpoint
+            var sql = "UPDATE accounts SET name = ?, deleted = true WHERE id = ?";
+            var jbdcConnection = getConnection().getJbdcConnection();
+            var pstmt = jbdcConnection.prepareStatement(sql);
+            pstmt.setString(1, userName);
+            pstmt.setInt(2, id);
             pstmt.executeUpdate();
             jbdcConnection.commit();
         } catch (SQLException e) {

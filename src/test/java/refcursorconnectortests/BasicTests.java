@@ -13,6 +13,8 @@ public class BasicTests {
         var config = new RefCursorConfiguration();
         var connector = new RefCursorConnector();
         connector.init(config);
-        connector.create(null, null, null);
+        //connector.create(null, null, null);
+
+        connector.update(null, null, null, null);
     }
 }
