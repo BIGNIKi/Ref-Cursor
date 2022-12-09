@@ -1,10 +1,17 @@
 DROP TABLE IF EXISTS accounts;
-CREATE TABLE accounts(
-    Id INTEGER NOT NULL,
-    Name VARCHAR(255)
+CREATE TABLE accounts
+(
+    Id      INTEGER PRIMARY KEY generated always as identity,
+    Name    VARCHAR(255),
+    deleted BOOLEAN
 );
-insert into accounts values(1, 'Shikhar');
-insert into accounts values(2, 'Jonathan');
-insert into accounts values(3, 'Kumara');
-insert into accounts values(4, 'Virat');
-insert into accounts values(5, 'Rohit');
+insert into accounts (name, deleted)
+values ('Shikhar', false);
+insert into accounts (name, deleted)
+values ('Jonathan', false);
+insert into accounts (name, deleted)
+values ('Kumara', false);
+insert into accounts (name, deleted)
+values ('Virat', false);
+insert into accounts (name, deleted)
+values ('Rohit', false);

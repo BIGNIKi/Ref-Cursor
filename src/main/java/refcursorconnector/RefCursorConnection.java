@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class RefCursorConnection{
+public class RefCursorConnection  {
     private Connection jbdcConnection;
 
     private RefCursorConfiguration configuration;
@@ -28,7 +28,6 @@ public class RefCursorConnection{
 
 
     public void openConnection()  {
-        // TODO implement
     }
 
     public void closeConnection() throws SQLException {

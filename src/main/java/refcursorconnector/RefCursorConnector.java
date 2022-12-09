@@ -49,29 +49,21 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> set, OperationOptions operationOptions) {
-        LOG.info("attributes {0}", set);
-        String name = (String) set.toArray(new Attribute[0])[0].getValue().get(0);
-        LOG.info("name {0}", name);
-
         var cursor = getRefCursor();
 
         // TODO Get ref cursor data (hardcode)
-//        while (cursor.next()) {
-//            cursor.getString(1)
-//        }
-
         try {
-            openConnection();
-            // TODO place data to midpoint
-            var pstmt = getConnection().getJbdcConnection().prepareStatement(sql, bld.getParams());
-            pstmt.execute();
+            while(cursor.next()) {
+                var id = cursor.getString(1);
+                var name = cursor.getString(2);
+
+                this.insertIntoMidpoint(name);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
 
-        return new Uid(name);
+        return new Uid("12");
     }
 
     private RefCursorConnection getConnection() throws SQLException {
@@ -96,6 +88,9 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         }
     }
 
+    /**
+     * Возвращает ref-cursor к текущей БД
+     */
     private ResultSet getRefCursor() {
         try {
             var stmt = connection.getJbdcConnection().createStatement();
@@ -129,6 +124,16 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     @Override
     public void delete(ObjectClass objectClass, Uid uid, OperationOptions operationOptions) {
         // TODO В мидпоинте удаляем те строки, которые в нашей базе помечены как deleted
+        var cursor = getRefCursor();
+
+        try {
+            while(cursor.next()) {
+                var isDeleted = cursor.getBoolean(3);
+                this.deleteInMidpoint(cursor.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -139,5 +144,45 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     @Override
     public SyncToken getLatestSyncToken(ObjectClass objectClass) {
         return null;
+    }
+
+    /**
+     * Добавляет пользователя в БД мидпонита
+     */
+    private void insertIntoMidpoint(String userName) {
+        try {
+            openConnection();
+            // TODO place data to midpoint
+            var sql = "INSERT INTO accounts (Name, deleted) Values (?, false)";
+            var jbdcConnection = getConnection().getJbdcConnection();
+            var pstmt = jbdcConnection.prepareStatement(sql);
+            pstmt.setString(1, userName);
+            pstmt.executeUpdate();
+            jbdcConnection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * Удаляет пользователя из БД мидпонита
+     */
+    private void deleteInMidpoint(Integer id) {
+        try {
+            openConnection();
+            // TODO place data to midpoint
+            var sql = "DELETE FROM accounts WHERE id = ?";
+            var jbdcConnection = getConnection().getJbdcConnection();
+            var pstmt = jbdcConnection.prepareStatement(sql);
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            jbdcConnection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
     }
 }
