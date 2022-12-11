@@ -40,3 +40,5 @@ version.txt
 
 #misc
 derby.log
+
+Docker/midpoint/icf-connectors/*.jar
