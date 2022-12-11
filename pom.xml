@@ -27,7 +27,7 @@
         <sonar.organization>lima</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <midpoint.version>4.7-SNAPSHOT</midpoint.version>
+        <midpoint.version>4.6</midpoint.version>
     </properties>
 
     <repositories>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.evolveum.midpoint.client</groupId>
             <artifactId>midpoint-client-impl-prism</artifactId>
-            <version>4.6</version>
+            <version>${midpoint.version}</version>
         </dependency>
 
 

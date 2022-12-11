@@ -16,35 +16,40 @@ import java.util.HashSet;
 import java.util.Set;
 
 @ConnectorClass(
-        displayNameKey = "REFCURSOR_CONNECTOR",
-        configurationClass = RefCursorConfiguration.class)
-public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SyncOp, SchemaOp {
+        displayNameKey = "refcursor.connector.display",
+        configurationClass = RefCursorConnectorConfiguration.class)
+public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SchemaOp, TestOp, SyncOp {
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
-    private RefCursorConfiguration configuration;
+    private RefCursorConnectorConfiguration configuration;
 
-    private RefCursorConnection connection;
+    private RefCursorConnectorConnection connection;
 
     private final String KEY_COLUMN = "name";
     private final String PASSWORD_COLUMN = "password";
 
     @Override
     public Configuration getConfiguration() {
+        LOG.info("[Connector] Get configuration");
         return configuration;
     }
 
     @Override
     public void init(Configuration configuration) {
-        this.configuration = (RefCursorConfiguration)configuration;
+        LOG.info("[Connector] Starting initialization");
+        this.configuration = (RefCursorConnectorConfiguration)configuration;
+        this.configuration.init();
         try {
-            this.connection = new RefCursorConnection(this.configuration);
+            this.connection = new RefCursorConnectorConnection(this.configuration);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        LOG.info("[Connector] Initialization finished");
     }
 
     @Override
     public void dispose() {
+        LOG.info("[Connector] Dispose");
         if (connection == null) {
             return;
         }
@@ -55,6 +60,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> set, OperationOptions operationOptions) {
+        LOG.info("[Connector] Start creating");
         LOG.info("attributes are" + set);
         try {
             var cursor = getConnection().getRefCursor();
@@ -79,6 +85,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> set, OperationOptions operationOptions) {
+        LOG.info("[Connector] Start updating");
         throw new NotImplementedException("Not Implemented");
 //        try {
 //            var cursor = getConnection().getRefCursor();
@@ -103,6 +110,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public void delete(ObjectClass objectClass, Uid uid, OperationOptions operationOptions) {
+        LOG.info("[Connector] Starting deleting");
         if (uid == null || (uid.getUidValue() == null)) {
             throw new IllegalArgumentException("Uid is empty");
         }
@@ -136,13 +144,13 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         return null;
     }
 
-    private RefCursorConnection getConnection() throws Exception {
+    private RefCursorConnectorConnection getConnection() throws Exception {
         if (connection != null) {
             return connection;
         }
 
         configuration.validate();
-        connection = new RefCursorConnection(configuration);
+        connection = new RefCursorConnectorConnection(configuration);
         return connection;
     }
 
@@ -154,18 +162,11 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         return getConnection().getJbdcConnection();
     }
 
-    private void closeConnection() {
-        try {
-            getConnection().closeConnection();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private Schema schema;
 
     @Override
     public Schema schema() {
+        LOG.info("[Connector] Start schema retrieving");
         try {
             var attributes = buildSelectBasedAttributeInfos();
             var schema = buildSchema(attributes);
@@ -224,5 +225,10 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         }
 
         return attrInfo;
+    }
+
+    @Override
+    public void test() {
+        LOG.info("[Connector] Start testing");
     }
 }

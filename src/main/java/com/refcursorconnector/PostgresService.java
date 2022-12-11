@@ -52,7 +52,6 @@ public class PostgresService {
             final String SCHEMA_QUERY = "SELECT * FROM accounts WHERE id IS NULL";
             var stmt = jbdcConnection.createStatement();
             var result = stmt.executeQuery(SCHEMA_QUERY);
-            jbdcConnection.commit();
 
             return result;
         } catch (SQLException e) {

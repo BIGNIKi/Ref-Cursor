@@ -1,8 +1,8 @@
 package refcursorconnectortests;
 
 import com.refcursorconnector.PostgresService;
-import com.refcursorconnector.RefCursorConfiguration;
-import com.refcursorconnector.RefCursorConnection;
+import com.refcursorconnector.RefCursorConnectorConfiguration;
+import com.refcursorconnector.RefCursorConnectorConnection;
 import com.refcursorconnector.RefCursorConnector;
 import org.springframework.core.annotation.Order;
 import org.testng.Assert;
@@ -16,13 +16,17 @@ public class BasicTests {
 
     @BeforeClass
     public void setUpBeforeClass() throws Exception {
-        var configuration = new RefCursorConfiguration();
+        connector = new RefCursorConnector();
+        var configuration = new RefCursorConnectorConfiguration();
+        configuration.init();
 
-        var connection = new RefCursorConnection(configuration);
+        connector.init(configuration);
+        Assert.assertEquals(configuration, connector.getConfiguration());
+
+        var connection = new RefCursorConnectorConnection(configuration);
         PostgresService.initTable(connection.getJbdcConnection());
 
-        connector = new RefCursorConnector();
-        connector.init(configuration);
+        Assert.assertNotNull(connector.getConfiguration());
     }
 
     @AfterClass
