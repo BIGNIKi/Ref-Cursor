@@ -2,12 +2,15 @@ package refcursorconnector;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RefCursorConnection  {
     private Connection jbdcConnection;
 
     private MidpointClient midpointClient;
+
+    private ResultSet refcursor;
 
     private RefCursorConfiguration configuration;
 
@@ -16,6 +19,7 @@ public class RefCursorConnection  {
 
         var postgres = configuration.getPostgresConfiguration();
         jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+        refcursor = PostgresService.getRefCursor(jbdcConnection);
 
         midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
     }
@@ -27,6 +31,10 @@ public class RefCursorConnection  {
 
     public Connection getJbdcConnection() {
         return jbdcConnection;
+    }
+
+    public ResultSet getRefCursor() {
+        return refcursor;
     }
 
     public MidpointClient getMidpointClient() {

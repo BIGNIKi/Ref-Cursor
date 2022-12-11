@@ -33,6 +33,22 @@ public class MidpointClient {
     }
 
     /**
+     * Добавляет пользователя в midpoint
+     * @param user
+     * @return oid добавленного пользователя, null - в противном случае
+     */
+    public String addUser(UserType user) {
+        try {
+            var ref = client.users().add(user).post();
+            return ref.getOid();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Удаляет пользователя
      * @param oid
      * @return true, если удаление прошло успешно, false - в противном случае

@@ -1,5 +1,7 @@
 package refcursorconnectortests;
 
+import org.springframework.core.annotation.Order;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -25,7 +27,15 @@ public class BasicTests {
     }
 
     @Test
+    @Order(1)
+    public void testScheme() {
+        var schema = connector.schema();
+        Assert.assertNotNull(schema);
+    }
+
+    @Test
+    @Order(2)
     public void testCreate() throws Exception {
-        connector.create(null, null, null);
+        //connector.create(null, null, null);
     }
 }

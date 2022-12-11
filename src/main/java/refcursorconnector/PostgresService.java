@@ -35,9 +35,29 @@ public class PostgresService {
         }
     }
 
+    /**
+     * Инициализирует таблицу с пользователями в БД postgresSQL
+     */
     public static void initTable(Connection jbdcConnection) throws FileNotFoundException {
         var runner = new ScriptRunner(jbdcConnection);
         var reader = new BufferedReader(new FileReader("src/main/resources/create_table.sql"));
         runner.runScript(reader);
+    }
+
+    /**
+     * Возвращает схему для активного соединения с БД
+     */
+    public static ResultSet getScheme(Connection jbdcConnection) {
+        try {
+            final String SCHEMA_QUERY = "SELECT * FROM accounts WHERE id IS NULL";
+            var stmt = jbdcConnection.createStatement();
+            var result = stmt.executeQuery(SCHEMA_QUERY);
+            jbdcConnection.commit();
+
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

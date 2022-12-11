@@ -1,44 +1,21 @@
 version: "3.4"
 
 services:
-    postgres-midpoint:
+    postgres:
         image: postgres:13-alpine
-        container_name: postgres-midpoint
+        container_name: postgres
         environment:
             - POSTGRES_USER=midpoint
             - POSTGRES_DB=midpoint
             - POSTGRES_HOST_AUTH_METHOD=trust
         ports:
-            - "5432:5432"
+            - 5432:5432
         networks:
             - net
-    midpoint:
-        image: evolveum/midpoint:${MP_VERSION:-4.5}-alpine
-        container_name: midpoint
-        ports:
-            - "8080:8080"
-        environment:
-            - MP_ENTRY_POINT=/opt/midpoint-dirs-docker-entrypoint
-            - REPO_DATABASE_TYPE=postgresql
-            - REPO_HOST=postgres-midpoint
-            - REPO_DATABASE=midpoint
-            - REPO_USER=midpoint
-            - REPO_PASSWORD_FILE=/run/secrets/mp_database_password.txt
-            - MP_KEYSTORE_PASSWORD_FILE=/run/secrets/mp_keystore_password.txt
-        networks:
-            - net
-        secrets:
-            - mp_database_password.txt
-            - mp_keystore_password.txt
-        volumes:
-            - midpoint_home:/opt/midpoint/var
-        depends_on:
-            - postgres
-            - postgres-midpoint
 
-    postgres:
+    postgres-crm:
         image: postgres:13-alpine
-        container_name: postgres
+        container_name: postgres-crm
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
@@ -47,17 +24,25 @@ services:
         ports:
             - "5433:5432"
         networks:
+            - net    
+
+    midpoint:
+        image: evolveum/midpoint:4.4-alpine
+        container_name: midpoint
+        environment:
+            - MP_ENTRY_POINT=/opt/midpoint-dirs-docker-entrypoint
+            - REPO_DATABASE_TYPE=postgresql
+            - REPO_DATABASE=midpoint
+            - REPO_USER=midpoint
+            - REPO_HOST=postgres
+        ports:
+            - 8080:8080
+        networks:
             - net
+        volumes:
+            - ./midpoint/pio:/opt/midpoint-dirs-docker-entrypoint/:ro
+            - ./midpoint/icf-connectors:/opt/midpoint/var/icf-connectors/
+
 networks:
     net:
         driver: bridge
-
-secrets:
-    mp_database_password.txt:
-        file: ./configs-and-secrets/database_password.txt
-    mp_keystore_password.txt:
-        file: ./configs-and-secrets/keystore_password.txt
-
-volumes:
-    midpoint_home:
-        name: midpoint
