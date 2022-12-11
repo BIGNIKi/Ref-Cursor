@@ -5,18 +5,16 @@ import com.evolveum.midpoint.client.api.exception.ObjectNotFoundException;
 import com.evolveum.midpoint.client.api.exception.SchemaException;
 import com.evolveum.midpoint.client.impl.prism.RestPrismServiceBuilder;
 import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
+import refcursorconnector.config.MidpointConfiguration;
 
 /**
  * Сервис для работы с midpoint client api
  */
 public class MidpointClient {
-    public static final String ADMIN = "administrator";
-    public static final String ADMIN_PASS = "5ecr3t";
-
     private Service client;
 
-    public MidpointClient() throws Exception {
-        client = createClient();
+    public MidpointClient(MidpointConfiguration configuration) throws Exception {
+        client = createClient(configuration);
     }
 
     /**
@@ -60,11 +58,11 @@ public class MidpointClient {
         }
     }
 
-    private Service createClient() throws Exception {
+    private Service createClient(MidpointConfiguration configuration) throws Exception {
         RestPrismServiceBuilder builder = RestPrismServiceBuilder.create();
-        return builder.username(ADMIN)
-                .password(ADMIN_PASS)
-                .baseUrl("http://localhost:8080/midpoint/ws/rest")
+        return builder.username(configuration.user)
+                .password(configuration.password)
+                .baseUrl(configuration.host)
                 .build();
     }
 }

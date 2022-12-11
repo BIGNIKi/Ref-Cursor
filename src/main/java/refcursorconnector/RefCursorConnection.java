@@ -7,23 +7,30 @@ import java.sql.SQLException;
 public class RefCursorConnection  {
     private Connection jbdcConnection;
 
+    private MidpointClient midpointClient;
+
     private RefCursorConfiguration configuration;
 
-    private static final String url = "jdbc:postgresql://localhost:5433/postgres";
-    private static final String user = "postgres";
-    private static final String password = "postgres";
-
-    public RefCursorConnection(RefCursorConfiguration configuration) throws SQLException {
+    public RefCursorConnection(RefCursorConfiguration configuration) throws Exception {
         configuration = configuration;
-        jbdcConnection = DriverManager.getConnection(url, user, password);
+
+        var postgres = configuration.getPostgresConfiguration();
+        jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+
+        midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
     }
 
     public void dispose() {
         // TODO implement
+        midpointClient.dispose();
     }
 
     public Connection getJbdcConnection() {
         return jbdcConnection;
+    }
+
+    public MidpointClient getMidpointClient() {
+        return midpointClient;
     }
 
     public void openConnection()  {
