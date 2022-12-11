@@ -9,4 +9,4 @@
 docker-compose up -d
 ```
 
-2. To run "mvn install" use VPN.
+2. To install maven dependencies `mvn clean install --settings .mvn/custom-settings.xml` in project directory.

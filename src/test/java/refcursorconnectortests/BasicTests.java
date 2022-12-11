@@ -1,20 +1,18 @@
 package refcursorconnectortests;
 
 
+import com.evolveum.midpoint.xml.ns._public.common.common_3.SystemObjectsType;
 import org.junit.Test;
-import refcursorconnector.RefCursorConfiguration;
-import refcursorconnector.RefCursorConnector;
-
-import java.sql.SQLException;
+import refcursorconnector.MidpointClient;
 
 public class BasicTests {
-    @Test
-    public void testCreate() throws SQLException {
-        var config = new RefCursorConfiguration();
-        var connector = new RefCursorConnector();
-        connector.init(config);
-        //connector.create(null, null, null);
 
-        connector.update(null, null, null, null);
+    @Test
+    public void testCreate() throws Exception {
+        var client = new MidpointClient();
+        var existed = client.getUserByOid(SystemObjectsType.USER_ADMINISTRATOR.value());
+        client.dispose();
+
+        System.out.println("User : " + existed.getName());
     }
 }

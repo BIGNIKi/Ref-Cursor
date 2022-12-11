@@ -10,7 +10,10 @@ import org.identityconnectors.framework.spi.operations.DeleteOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Set;
 
 @ConnectorClass(
@@ -18,6 +21,8 @@ import java.util.Set;
         configurationClass = RefCursorConfiguration.class)
 public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SyncOp {
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
+
+
 
     private RefCursorConfiguration configuration;
     private RefCursorConnection connection;
@@ -39,6 +44,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public void dispose() {
+
         if (connection == null) {
             return;
         }
@@ -49,19 +55,18 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> set, OperationOptions operationOptions) {
-        var cursor = getRefCursor();
+        //var cursor = getRefCursor();
 
         // TODO Get ref cursor data (hardcode)
-        try {
-            while(cursor.next()) {
-                var id = cursor.getString(1);
-                var name = cursor.getString(2);
 
-                this.insertIntoMidpoint(name);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//            while(cursor.next()) {
+//                var id = cursor.getString(1);
+//                var name = cursor.getString(2);
+//
+//                this.insertIntoMidpoint(name);
+//            }
+
+
 
         return new Uid("12");
     }
@@ -162,25 +167,6 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         return null;
     }
 
-    /**
-     * Добавляет пользователя в БД мидпонита
-     */
-    private void insertIntoMidpoint(String userName) {
-        try {
-            openConnection();
-            // TODO place data to midpoint
-            var sql = "INSERT INTO accounts (Name, deleted) Values (?, false)";
-            var jbdcConnection = getConnection().getJbdcConnection();
-            var pstmt = jbdcConnection.prepareStatement(sql);
-            pstmt.setString(1, userName);
-            pstmt.executeUpdate();
-            jbdcConnection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeConnection();
-        }
-    }
 
     /**
      * Обновляет запись в мидпоинте
@@ -209,7 +195,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     private void deleteInMidpoint(Integer id) {
         try {
             openConnection();
-            // TODO place data to midpoint
+            // TODO place data to midpoint m_user
             var sql = "DELETE FROM accounts WHERE id = ?";
             var jbdcConnection = getConnection().getJbdcConnection();
             var pstmt = jbdcConnection.prepareStatement(sql);
@@ -222,4 +208,6 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
             closeConnection();
         }
     }
+
+
 }

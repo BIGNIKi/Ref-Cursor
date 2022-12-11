@@ -39,20 +39,22 @@
 
         <sonar.organization>lima</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <midpoint.version>4.7-SNAPSHOT</midpoint.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>evolveum-nexus-releases</id>
-            <name>Internal Releases</name>
-            <url>http://nexus.evolveum.com/nexus/content/repositories/releases/</url>
+            <id>evolveum</id>
+            <name>Evolveum Public Releases</name>
+            <url>https://nexus.evolveum.com/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>evolveum-snapshots</id>
+            <name>Evolveum Snapshots</name>
+            <url>https://nexus.evolveum.com/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <repository>
-            <id>evolveum-nexus-snapshots</id>
-            <name>Internal Releases</name>
-            <url>http://nexus.evolveum.com/nexus/content/repositories/snapshots/</url>
-        </repository>
         <repository>
             <id>central</id>
             <name>Maven Central</name>
@@ -62,6 +64,9 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+
+
+
     </repositories>
 
     <dependencies>
@@ -76,5 +81,41 @@
             <artifactId>mybatis</artifactId>
             <version>3.4.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.evolveum.midpoint.client</groupId>
+            <artifactId>midpoint-client-impl-prism</artifactId>
+            <version>4.6</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.evolveum.midpoint.client</groupId>
+            <artifactId>midpoint-client-api</artifactId>
+            <version>4.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.evolveum.midpoint.infra</groupId>
+                    <artifactId>schema-pure-jaxb</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.evolveum.midpoint.infra</groupId>
+            <artifactId>schema</artifactId>
+            <version>${midpoint.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.evolveum.prism</groupId>
+            <artifactId>prism-api</artifactId>
+            <version>${midpoint.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.evolveum.prism</groupId>
+            <artifactId>prism-impl</artifactId>
+            <version>${midpoint.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

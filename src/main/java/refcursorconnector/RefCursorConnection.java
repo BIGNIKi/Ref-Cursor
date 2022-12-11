@@ -26,7 +26,6 @@ public class RefCursorConnection  {
         return jbdcConnection;
     }
 
-
     public void openConnection()  {
     }
 
