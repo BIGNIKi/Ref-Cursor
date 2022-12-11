@@ -3,18 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>10</source>
-                    <target>10</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <parent>
         <artifactId>connector-parent</artifactId>
@@ -23,8 +11,7 @@
         <relativePath></relativePath>
     </parent>
 
-    <groupId>org.example</groupId>
-    <artifactId>ref-cursor</artifactId>
+    <artifactId>connector-refcursor</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -34,7 +21,7 @@
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
 
-        <connectorPackage>refcursorconnector</connectorPackage>
+        <connectorPackage>com.refcursorconnector</connectorPackage>
         <connectorClass>RefCursorConnector</connectorClass>
 
         <sonar.organization>lima</sonar.organization>
@@ -45,16 +32,15 @@
 
     <repositories>
         <repository>
-            <id>evolveum</id>
-            <name>Evolveum Public Releases</name>
+            <id>evolveum-nexus-releases</id>
+            <name>Internal Releases</name>
             <url>https://nexus.evolveum.com/nexus/content/groups/public/</url>
         </repository>
         <repository>
-            <id>evolveum-snapshots</id>
-            <name>Evolveum Snapshots</name>
+            <id>evolveum-nexus-snapshots</id>
+            <name>Internal Releases</name>
             <url>https://nexus.evolveum.com/nexus/content/repositories/snapshots/</url>
         </repository>
-
         <repository>
             <id>central</id>
             <name>Maven Central</name>
@@ -64,10 +50,25 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
-
-
     </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

@@ -1,11 +1,15 @@
 package refcursorconnectortests;
 
+import com.refcursorconnector.PostgresService;
+import com.refcursorconnector.RefCursorConfiguration;
+import com.refcursorconnector.RefCursorConnection;
+import com.refcursorconnector.RefCursorConnector;
 import org.springframework.core.annotation.Order;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import refcursorconnector.*;
+
 
 public class BasicTests {
     private RefCursorConnector connector;
