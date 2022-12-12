@@ -14,8 +14,13 @@ public class RefCursorConnectorConnection {
 
     private RefCursorConnectorConfiguration configuration;
 
-    public RefCursorConnectorConnection(RefCursorConnectorConfiguration configuration) {
+    public RefCursorConnectorConnection(RefCursorConnectorConfiguration configuration) throws Exception {
         this.configuration = configuration;
+
+        var postgres = configuration.getPostgresConfiguration();
+        this.jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+
+        this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
     }
 
     public void dispose()  {
@@ -34,13 +39,7 @@ public class RefCursorConnectorConnection {
         }
     }
 
-    public Connection getJbdcConnection() throws SQLException {
-        if (jbdcConnection != null) {
-            return jbdcConnection;
-        }
-
-        var postgres = configuration.getPostgresConfiguration();
-        jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+    public Connection getJbdcConnection() {
         return jbdcConnection;
     }
 
@@ -53,12 +52,7 @@ public class RefCursorConnectorConnection {
         return refcursor;
     }
 
-    public MidpointClient getMidpointClient() throws Exception {
-        if (midpointClient != null) {
-            return midpointClient;
-        }
-
-        midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
+    public MidpointClient getMidpointClient() {
         return midpointClient;
     }
 }

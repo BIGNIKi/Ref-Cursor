@@ -11,6 +11,7 @@
         <relativePath></relativePath>
     </parent>
 
+    <groupId>com.refcursorconnector</groupId>
     <artifactId>connector-refcursor</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
