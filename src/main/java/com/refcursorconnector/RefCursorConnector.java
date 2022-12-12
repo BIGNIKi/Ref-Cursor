@@ -1,6 +1,10 @@
 package com.refcursorconnector;
 
 import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.refcursorconnector.models.SQLColumn;
 import org.apache.commons.lang3.NotImplementedException;
 import org.identityconnectors.common.CollectionUtil;
@@ -13,6 +17,7 @@ import org.identityconnectors.framework.spi.operations.*;
 
 import java.sql.*;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @ConnectorClass(
@@ -37,7 +42,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     @Override
     public void init(Configuration configuration) {
         LOG.info("[Connector] Starting initialization");
-        this.configuration = (RefCursorConnectorConfiguration)configuration;
+        this.configuration = (RefCursorConnectorConfiguration) configuration;
         this.configuration.init();
         try {
             this.connection = new RefCursorConnectorConnection(this.configuration);
@@ -166,7 +171,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     private Schema schema;
 
-    @Override
+/*    @Override
     public Schema schema() {
         LOG.info("[Connector] Start schema retrieving");
         try {
@@ -177,6 +182,33 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
             e.printStackTrace();
         }
         return schema;
+    }*/
+
+    @Override
+    public Schema schema() {
+        try {
+
+            var response = PostgresService.getScheme(getJbdcConnection());
+
+            ObjectClassInfo classInfo = buildObjectClassInfo(response);
+
+            SchemaBuilder schemaBuilder = new SchemaBuilder(RefCursorConnector.class);
+            schemaBuilder.defineObjectClass(classInfo);
+            return schemaBuilder.build();
+        } catch (JsonProcessingException e) {
+            LOG.ok("JSON parsing failed");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static ObjectClassInfo buildObjectClassInfo(ResultSet root) throws SQLException {
+        ObjectClassInfoBuilder objectClassBuilder = new ObjectClassInfoBuilder();
+        
+        var resourceInfo = root.getMetaData();
+
+        return objectClassBuilder.build();
     }
 
     private Schema buildSchema(Set<AttributeInfo> attrInfoSet) {
