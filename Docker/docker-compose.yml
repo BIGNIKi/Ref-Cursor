@@ -24,7 +24,7 @@ services:
         ports:
             - "5433:5432"
         networks:
-            - net    
+            - net
 
     midpoint:
         image: evolveum/midpoint:4.4-alpine

@@ -1,11 +1,15 @@
 package com.refcursorconnector;
 
+import org.identityconnectors.common.logging.Log;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RefCursorConnectorConnection {
+    public static final Log LOG = Log.getLog(RefCursorConnectorConnection.class);
+
     private Connection jbdcConnection;
 
     private MidpointClient midpointClient;
@@ -17,7 +21,10 @@ public class RefCursorConnectorConnection {
     public RefCursorConnectorConnection(RefCursorConnectorConfiguration configuration) throws Exception {
         this.configuration = configuration;
 
+        Class.forName("org.postgresql.Driver");
+
         var postgres = configuration.getPostgresConfiguration();
+        LOG.info("[Connector] init connection " + postgres.host + " : " + postgres.user + " : " + postgres.password);
         this.jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
 
         this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
