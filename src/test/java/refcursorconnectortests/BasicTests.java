@@ -16,17 +16,17 @@ public class BasicTests {
 
     @BeforeClass
     public void setUpBeforeClass() throws Exception {
-        connector = new RefCursorConnector();
-        var configuration = new RefCursorConnectorConfiguration();
-        configuration.init();
-
-        connector.init(configuration);
-        Assert.assertEquals(configuration, connector.getConfiguration());
-
-        var connection = new RefCursorConnectorConnection(configuration);
-        PostgresService.initTable(connection.getJbdcConnection());
-
-        Assert.assertNotNull(connector.getConfiguration());
+//        connector = new RefCursorConnector();
+//        var configuration = new RefCursorConnectorConfiguration();
+//        configuration.init();
+//
+//        connector.init(configuration);
+//        Assert.assertEquals(configuration, connector.getConfiguration());
+//
+//        var connection = new RefCursorConnectorConnection(configuration);
+//        PostgresService.initTable(connection.getJbdcConnection());
+//
+//        Assert.assertNotNull(connector.getConfiguration());
     }
 
     @AfterClass

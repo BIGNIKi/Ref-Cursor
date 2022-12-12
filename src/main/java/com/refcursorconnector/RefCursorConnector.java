@@ -166,15 +166,16 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
     @Override
     public Schema schema() {
-        LOG.info("[Connector] Start schema retrieving");
-        try {
-            var attributes = buildSelectBasedAttributeInfos();
-            var schema = buildSchema(attributes);
-            this.schema = schema;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return schema;
+        ObjectClassInfoBuilder objectClassBuilder = new ObjectClassInfoBuilder();
+        objectClassBuilder.setType("myAccount");
+        objectClassBuilder.addAttributeInfo(
+                AttributeInfoBuilder.build("fullName", String.class));
+        objectClassBuilder.addAttributeInfo(
+                AttributeInfoBuilder.build("homeDir", String.class));
+
+        SchemaBuilder schemaBuilder = new SchemaBuilder(RefCursorConnector.class);
+        schemaBuilder.defineObjectClass(objectClassBuilder.build());
+        return schemaBuilder.build();
     }
 
     private Schema buildSchema(Set<AttributeInfo> attrInfoSet) {
