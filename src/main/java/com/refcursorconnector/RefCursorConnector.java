@@ -45,6 +45,8 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
             e.printStackTrace();
         }
         LOG.info("[Connector] Initialization finished");
+
+        create(null, null, null);
     }
 
     @Override
