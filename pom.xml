@@ -28,7 +28,7 @@
         <sonar.organization>lima</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <midpoint.version>4.6</midpoint.version>
+        <midpoint.version>4.4</midpoint.version>
     </properties>
 
     <repositories>

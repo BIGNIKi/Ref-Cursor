@@ -1,4 +1,6 @@
-<resource xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3" xmlns:c="http://midpoint.evolveum.com/xml/ns/public/common/common-3" xmlns:icfs="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/resource-schema-3" xmlns:org="http://midpoint.evolveum.com/xml/ns/public/common/org-3" xmlns:q="http://prism.evolveum.com/xml/ns/public/query-3" xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3" xmlns:t="http://prism.evolveum.com/xml/ns/public/types-3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resource xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3" xmlns:c="http://midpoint.evolveum.com/xml/ns/public/common/common-3" xmlns:icfs="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/resource-schema-3" xmlns:org="http://midpoint.evolveum.com/xml/ns/public/common/org-3" xmlns:q="http://prism.evolveum.com/xml/ns/public/query-3" xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3" xmlns:t="http://prism.evolveum.com/xml/ns/public/types-3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         oid="7331ce47-d667-4fa3-81d5-c6974c37d29c" version="8">
     <name>MyResource</name>
     <metadata>
@@ -8,86 +10,8 @@
         </modifierRef>
         <modifyChannel>http://midpoint.evolveum.com/xml/ns/public/common/channels-3#user</modifyChannel>
     </metadata>
-    <operationExecution id="1">
-        <recordType>simple</recordType>
-        <timestamp>2022-11-04T08:02:55.350Z</timestamp>
-        <operation>
-            <objectDelta>
-                <t:changeType>modify</t:changeType>
-                <t:objectType>c:ResourceType</t:objectType>
-            </objectDelta>
-            <executionResult>
-                <operation>com.evolveum.midpoint.model.impl.lens.ChangeExecutor.executeDelta</operation>
-                <status>success</status>
-                <importance>normal</importance>
-                <token>1000000000000000964</token>
-            </executionResult>
-            <objectName>MyResource</objectName>
-        </operation>
-        <status>success</status>
-        <initiatorRef oid="00000000-0000-0000-0000-000000000002" relation="org:default" type="c:UserType">
-            <!-- administrator -->
-        </initiatorRef>
-        <channel>http://midpoint.evolveum.com/xml/ns/public/common/channels-3#user</channel>
-    </operationExecution>
-    <operationExecution id="5">
-        <recordType>simple</recordType>
-        <timestamp>2022-11-04T08:17:53.643Z</timestamp>
-        <operation>
-            <objectDelta>
-                <t:changeType>modify</t:changeType>
-                <t:objectType>c:ResourceType</t:objectType>
-            </objectDelta>
-            <executionResult>
-                <operation>com.evolveum.midpoint.model.impl.lens.ChangeExecutor.executeDelta</operation>
-                <status>success</status>
-                <importance>normal</importance>
-                <token>1000000000000002677</token>
-            </executionResult>
-            <objectName>MyResource</objectName>
-        </operation>
-        <status>success</status>
-        <initiatorRef oid="00000000-0000-0000-0000-000000000002" relation="org:default" type="c:UserType">
-            <!-- administrator -->
-        </initiatorRef>
-        <channel>http://midpoint.evolveum.com/xml/ns/public/common/channels-3#user</channel>
-    </operationExecution>
-    <operationExecution id="6">
-        <recordType>simple</recordType>
-        <timestamp>2022-11-04T08:34:09.495Z</timestamp>
-        <operation>
-            <objectDelta>
-                <t:changeType>modify</t:changeType>
-                <t:objectType>c:ResourceType</t:objectType>
-            </objectDelta>
-            <executionResult>
-                <operation>com.evolveum.midpoint.model.impl.lens.ChangeExecutor.executeDelta</operation>
-                <status>success</status>
-                <importance>normal</importance>
-                <token>1000000000000007808</token>
-            </executionResult>
-            <objectName>MyResource</objectName>
-        </operation>
-        <status>success</status>
-        <initiatorRef oid="00000000-0000-0000-0000-000000000002" relation="org:default" type="c:UserType">
-            <!-- administrator -->
-        </initiatorRef>
-        <channel>http://midpoint.evolveum.com/xml/ns/public/common/channels-3#user</channel>
-    </operationExecution>
     <iteration>0</iteration>
     <iterationToken/>
-    <operationalState>
-        <lastAvailabilityStatus>up</lastAvailabilityStatus>
-        <message>Status set to UP because testing connection using ConnectorSpec(resource:7331ce47-d667-4fa3-81d5-c6974c37d29c(MyResource), name=null, oid=d0de8be1-74d8-42f3-b2bf-9c87062cda4c). Connector test successful.</message>
-        <timestamp>2022-11-04T08:03:06.743Z</timestamp>
-        <nodeId>DefaultNode</nodeId>
-    </operationalState>
-    <operationalStateHistory id="2">
-        <lastAvailabilityStatus>up</lastAvailabilityStatus>
-        <message>Status set to UP because testing connection using ConnectorSpec(resource:7331ce47-d667-4fa3-81d5-c6974c37d29c(MyResource), name=null, oid=d0de8be1-74d8-42f3-b2bf-9c87062cda4c). Connector test successful.</message>
-        <timestamp>2022-11-04T08:03:06.743Z</timestamp>
-        <nodeId>DefaultNode</nodeId>
-    </operationalStateHistory>
     
     <connectorRef type="ConnectorType">
         <filter>
@@ -113,41 +37,43 @@
                 <xsd:import namespace="http://prism.evolveum.com/xml/ns/public/annotation-3"/>
                 <xsd:import namespace="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/resource-schema-3"/>
                 <xsd:import namespace="http://midpoint.evolveum.com/xml/ns/public/resource/annotation-3"/>
-                <xsd:complexType name="User">
+                <xsd:complexType name="AccountObjectClass">
                     <xsd:annotation>
                         <xsd:appinfo>
                             <ra:resourceObject/>
-                            <ra:identifier>icfs:uid</ra:identifier>
-                            <ra:secondaryIdentifier>icfs:name</ra:secondaryIdentifier>
-                            <ra:displayNameAttribute>icfs:name</ra:displayNameAttribute>
-                            <ra:namingAttribute>icfs:name</ra:namingAttribute>
-                            <ra:nativeObjectClass>User</ra:nativeObjectClass>
+                            <ra:identifier xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3">ri:empno</ra:identifier>
+                            <ra:displayNameAttribute xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3">ri:empno</ra:displayNameAttribute>
+                            <ra:namingAttribute xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3">ri:empno</ra:namingAttribute>
+                            <ra:nativeObjectClass>__ACCOUNT__</ra:nativeObjectClass>
+                            <ra:kind>account</ra:kind>
+                            <ra:default>true</ra:default>
                         </xsd:appinfo>
                     </xsd:annotation>
                     <xsd:sequence>
-                        <xsd:element minOccurs="0" name="userName" type="xsd:string">
+                        <xsd:element minOccurs="0" name="lastname" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:appinfo>
                                     <a:displayOrder>120</a:displayOrder>
-                                    <ra:frameworkAttributeName>userName</ra:frameworkAttributeName>
+                                    <ra:nativeAttributeName>lastname</ra:nativeAttributeName>
+                                    <ra:frameworkAttributeName>lastname</ra:frameworkAttributeName>
                                 </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element ref="icfs:name">
+                        <xsd:element minOccurs="0" name="firstname" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:appinfo>
-                                    <a:displayName>ConnId Name</a:displayName>
-                                    <a:displayOrder>110</a:displayOrder>
-                                    <ra:frameworkAttributeName>__NAME__</ra:frameworkAttributeName>
+                                    <a:displayOrder>130</a:displayOrder>
+                                    <ra:nativeAttributeName>firstname</ra:nativeAttributeName>
+                                    <ra:frameworkAttributeName>firstname</ra:frameworkAttributeName>
                                 </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element minOccurs="0" ref="icfs:uid">
+                        <xsd:element name="empno" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:appinfo>
-                                    <a:displayName>ConnId UID</a:displayName>
                                     <a:displayOrder>100</a:displayOrder>
-                                    <a:access>read</a:access>
+                                    <ra:nativeAttributeName>empno</ra:nativeAttributeName>
+                                    <ra:frameworkAttributeName>__NAME__</ra:frameworkAttributeName>
                                 </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
@@ -156,31 +82,66 @@
             </xsd:schema>
         </definition>
     </schema>
+
     <schemaHandling>
-        <objectType id="3">
-            <kind>account</kind>
-            <intent>default</intent>
-            <displayName>MyHandling</displayName>
+        <objectType id="1">
+            <displayName>Default Account</displayName>
             <default>true</default>
-            <objectClass>ri:User</objectClass>
-            <attribute id="4">
-                <ref>ri:userName</ref>
-                <displayName>userName</displayName>
-                <description>haha</description>
-                <tolerant>true</tolerant>
-                <exclusiveStrong>false</exclusiveStrong>
-                <outbound>
-                    <name>userName</name>
-                    <authoritative>true</authoritative>
-                    <exclusive>false</exclusive>
-                    <strength>normal</strength>
-                    <source>
-                        <path>fullName</path>
-                    </source>
-                </outbound>
+            <objectClass>ri:AccountObjectClass</objectClass>
+            <attribute id="2">
+                <ref>ri:empno</ref>
+                <displayName>Name</displayName>
+                <limitations>
+                    <minOccurs>0</minOccurs>
+                    <access>
+                        <read>true</read>
+                        <add>true</add>
+                        <modify>true</modify>
+                    </access>
+                </limitations>
+                <inbound id="5">
+                    <target>
+                        <path>name</path>
+                    </target>
+                </inbound>
             </attribute>
+            <attribute id="3">
+                <ref>ri:firstname</ref>
+                <displayName>First name</displayName>
+                <inbound id="6">
+                    <target>
+                        <path>givenName</path>
+                    </target>
+                </inbound>
+            </attribute>
+            <attribute id="4">
+                <ref>ri:lastname</ref>
+                <displayName>Last name</displayName>
+                <inbound id="7">
+                    <target>
+                        <path>familyName</path>
+                    </target>
+                </inbound>
+            </attribute>
+            <activation>
+                <administrativeStatus>
+                    <inbound id="8"/>
+                </administrativeStatus>
+            </activation>
+            <credentials>
+                <password xsi:type="c:ResourcePasswordDefinitionType">
+                    <inbound>
+                        <strength>weak</strength>
+                        <expression>
+                            <generate/>
+                        </expression>
+                    </inbound>
+                </password>
+            </credentials>
         </objectType>
     </schemaHandling>
+
+
     <capabilities>
         <cachingMetadata>
             <retrievalTimestamp>2022-11-04T08:03:06.807Z</retrievalTimestamp>
