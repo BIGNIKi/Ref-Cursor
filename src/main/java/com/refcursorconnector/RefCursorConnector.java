@@ -19,6 +19,7 @@ import java.util.Set;
         displayNameKey = "refcursor.connector.display",
         configurationClass = RefCursorConnectorConfiguration.class)
 public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SchemaOp, TestOp, SyncOp {
+    // com.refcursorconnector.RefCursorConnector
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
     private RefCursorConnectorConfiguration configuration;
@@ -41,6 +42,10 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         this.configuration.init();
         try {
             this.connection = new RefCursorConnectorConnection(this.configuration);
+            PostgresService.initTable(getJbdcConnection());
+
+            LOG.info("[Connector] Try create");
+            this.create(null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,7 +66,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> set, OperationOptions operationOptions) {
         LOG.info("[Connector] Start creating");
-        LOG.info("attributes are" + set);
+        LOG.info("[Connector] attributes are {0}", set);
         try {
             var cursor = getConnection().getRefCursor();
             if (!cursor.next()) {
@@ -69,8 +74,10 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
             }
 
             var client = getMidpointClient();
+            LOG.info("[Connector] midpoint client {0}", client);
 
             var name = cursor.getString(2);
+            LOG.info("[Connector] user name {0}", name);
             var user = new UserType().name(name);
             var oid = client.addUser(user);
             if (oid == null) {

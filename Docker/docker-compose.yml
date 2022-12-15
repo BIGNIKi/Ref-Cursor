@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
     postgres:
-        image: postgres:13-alpine
+        image: postgres:14-alpine
         container_name: postgres
         environment:
             - POSTGRES_USER=midpoint
@@ -14,7 +14,7 @@ services:
             - net
 
     postgres-crm:
-        image: postgres:13-alpine
+        image: postgres:14-alpine
         container_name: postgres-crm
         environment:
             - POSTGRES_USER=postgres
@@ -27,7 +27,7 @@ services:
             - net
 
     midpoint:
-        image: evolveum/midpoint:4.4-alpine
+        image: evolveum/midpoint:4.6-alpine
         container_name: midpoint
         environment:
             - MP_ENTRY_POINT=/opt/midpoint-dirs-docker-entrypoint

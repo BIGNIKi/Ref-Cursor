@@ -28,6 +28,7 @@ public class RefCursorConnectorConnection {
         this.jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
 
         this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
+        LOG.info("[Connector] midpoint host is {0}", configuration.getMidpointConfiguration().host);
     }
 
     public void dispose()  {

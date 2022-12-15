@@ -2,9 +2,8 @@ package com.refcursorconnector;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 public class PostgresService {
@@ -38,10 +37,14 @@ public class PostgresService {
     /**
      * Инициализирует таблицу с пользователями в БД postgresSQL
      */
-    public static void initTable(Connection jbdcConnection) throws FileNotFoundException {
-        var runner = new ScriptRunner(jbdcConnection);
-        var reader = new BufferedReader(new FileReader("src/main/resources/create_table.sql"));
-        runner.runScript(reader);
+    public static void initTable(Connection jbdcConnection) {
+        try (var inputStream = PostgresService.class.getResourceAsStream("/create_table.sql")) {
+            var reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            var runner = new ScriptRunner(jbdcConnection);
+            runner.runScript(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
