@@ -1,17 +1,14 @@
 package com.refcursorconnector;
 
 import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
-import com.evolveum.prism.xml.ns._public.types_3.PolyStringType;
-import com.refcursorconnector.models.SQLColumn;
 import org.apache.commons.lang3.NotImplementedException;
-import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 import org.identityconnectors.framework.spi.operations.*;
-
+import java.sql.Types;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,13 +16,15 @@ import java.util.Set;
 @ConnectorClass(
         displayNameKey = "refcursor.connector.display",
         configurationClass = RefCursorConnectorConfiguration.class)
-public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SchemaOp, TestOp, SyncOp {
+public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
     // com.refcursorconnector.RefCursorConnector
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
     private RefCursorConnectorConfiguration configuration;
 
     private RefCursorConnectorConnection connection;
+
+    private Schema schema;
 
     private final String KEY_COLUMN = "name";
     private final String PASSWORD_COLUMN = "password";
@@ -43,7 +42,8 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         this.configuration.init();
         try {
             this.connection = new RefCursorConnectorConnection(this.configuration);
-
+            PostgresService.initTable(getJbdcConnection());
+            this.schema = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,12 +53,22 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     @Override
     public void dispose() {
         LOG.info("[Connector] Dispose");
-        if (connection == null) {
-            return;
+        if (connection != null) {
+            connection.dispose();
         }
 
-        connection.dispose();
         connection = null;
+        schema = null;
+    }
+
+    public UserType find(Uid userUid) {
+        try {
+            var client = getMidpointClient();
+            return client.getUserByOid(userUid.getUidValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -168,29 +178,24 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         return getConnection().getJbdcConnection();
     }
 
-    private Schema schema;
-
     @Override
     public Schema schema() {
-        ObjectClassInfoBuilder objectClassBuilder = new ObjectClassInfoBuilder();
-        objectClassBuilder.setType("myAccount");
-        objectClassBuilder.addAttributeInfo(
-                AttributeInfoBuilder.build("fullName", String.class));
-        objectClassBuilder.addAttributeInfo(
-                AttributeInfoBuilder.build("homeDir", String.class));
-
-        SchemaBuilder schemaBuilder = new SchemaBuilder(RefCursorConnector.class);
-        schemaBuilder.defineObjectClass(objectClassBuilder.build());
-        return schemaBuilder.build();
+        try {
+            var set = buildSelectBasedAttributeInfos();
+            this.schema = buildSchema(set);
+            return this.schema;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private Schema buildSchema(Set<AttributeInfo> attrInfoSet) {
-        // Use SchemaBuilder to build the schema. Currently, only ACCOUNT type is supported.
+    private Schema buildSchema(Set<AttributeInfo> attributes) {
         final var builder = new SchemaBuilder(getClass());
-
         final var classInfoBuilder = new ObjectClassInfoBuilder();
+
         classInfoBuilder.setType(ObjectClass.ACCOUNT_NAME);
-        classInfoBuilder.addAllAttributeInfo(attrInfoSet);
+        classInfoBuilder.addAllAttributeInfo(attributes);
 
         final var classInfo = classInfoBuilder.build();
         builder.defineObjectClass(classInfo);
@@ -199,50 +204,57 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
     }
 
     private Set<AttributeInfo> buildSelectBasedAttributeInfos() throws Exception {
-        var sqlScheme = PostgresService.getScheme(getJbdcConnection());
-        if (sqlScheme == null) {
+        var metaData = PostgresService.getScheme(getJbdcConnection());
+        if (metaData == null) {
             throw new RuntimeException("SQL query returned null");
         }
 
-        var attrInfo = new HashSet<AttributeInfo>();
-
-        var metaData = sqlScheme.getMetaData();
+        var attributes = new HashSet<AttributeInfo>();
         var columnCount = metaData.getColumnCount();
-
-        var columnSQLTypes = CollectionUtil.<SQLColumn>newCaseInsensitiveMap();
 
         for (var i = 1; i <= columnCount; i++) {
             final var columnName = metaData.getColumnName(i);
             final var columnType = metaData.getColumnType(i);
-            final var columnTypeName = metaData.getColumnTypeName(i);
 
-            columnSQLTypes.put(columnName, new SQLColumn(columnTypeName, columnType));
+            final var builder = new AttributeInfoBuilder();
+            builder.setType(getType(columnType));
 
             if (columnName.equalsIgnoreCase(KEY_COLUMN)) {
-                final var builder = new AttributeInfoBuilder();
                 builder.setName(Name.NAME);
                 builder.setRequired(true);
-                attrInfo.add(builder.build());
-                continue;
+            } else {
+                builder.setName(columnName);
+                builder.setType(getType(columnType));
             }
 
-            if (columnName.equalsIgnoreCase(PASSWORD_COLUMN)) {
-                attrInfo.add(OperationalAttributeInfos.PASSWORD);
-            }
+            attributes.add(builder.build());
         }
 
-        return attrInfo;
+        return attributes;
     }
 
     @Override
     public void test() {
         LOG.info("[Connector] Start testing");
         try {
-            PostgresService.initTable(getJbdcConnection());
+            //PostgresService.initTable(getJbdcConnection());
             LOG.info("[Connector] Try create");
-            this.create(null, null, null);
+            //this.create(null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private Class<?> getType(int typeCode) {
+        switch (typeCode) {
+            case Types.INTEGER:
+                return Integer.class;
+            case Types.BOOLEAN:
+            case Types.BIT:
+                return Boolean.class;
+            case Types.VARCHAR:
+            default:
+                return String.class;
         }
     }
 }

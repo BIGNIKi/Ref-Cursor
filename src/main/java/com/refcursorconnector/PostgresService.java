@@ -55,10 +55,10 @@ public class PostgresService {
     /**
      * Возвращает схему для активного соединения с БД
      */
-    public static ResultSet getScheme(Connection jbdcConnection) {
+    public static ResultSetMetaData getScheme(Connection jbdcConnection) {
         try(var stmt = jbdcConnection.createStatement()) {
             final String SCHEMA_QUERY = "SELECT * FROM accounts WHERE id IS NULL";
-            return stmt.executeQuery(SCHEMA_QUERY);
+            return stmt.executeQuery(SCHEMA_QUERY).getMetaData();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -51,6 +51,10 @@ public class RefCursorConnectorConnection {
         return jbdcConnection;
     }
 
+    /**
+     * Получить ref-cursor на текущую бд и таблицу.
+     * Если ref-cursor уже создавался, вернет его, если нет - создаст новый
+     */
     public ResultSet getRefCursor() {
         if (refcursor != null) {
             return refcursor;

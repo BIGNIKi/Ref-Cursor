@@ -21,13 +21,11 @@ public class SQLColumn {
     public String toString() {
         var builder = new StringBuilder();
         if (getTypeName() != null) {
-            builder.append(getTypeName());
-            builder.append("=");
+            builder.append(String.format("typeName: %s; ", getTypeName()));
         }
 
         if (getTypeCode() != null) {
-            builder.append(getTypeCode());
-            builder.append("=");
+            builder.append(String.format("typeCode: %s", getTypeCode()));
         }
         return builder.toString();
     }
