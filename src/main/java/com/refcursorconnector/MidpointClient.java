@@ -28,6 +28,7 @@ public class MidpointClient {
 
     /**
      * Получить пользователя по id
+     *
      * @param oid
      * @return существующего пользователя или null, если его не удалось найти
      */
@@ -43,6 +44,7 @@ public class MidpointClient {
 
     /**
      * Добавляет пользователя в midpoint
+     *
      * @param user
      * @return oid добавленного пользователя, null - в противном случае
      */
@@ -62,6 +64,7 @@ public class MidpointClient {
 
     /**
      * Удаляет пользователя
+     *
      * @param oid
      * @return true, если удаление прошло успешно, false - в противном случае
      */
