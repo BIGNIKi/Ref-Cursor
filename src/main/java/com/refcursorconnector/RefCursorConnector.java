@@ -8,6 +8,7 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 import org.identityconnectors.framework.spi.operations.*;
+
 import java.sql.Types;
 import java.sql.*;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ import java.util.Set;
 @ConnectorClass(
         displayNameKey = "refcursor.connector.display",
         configurationClass = RefCursorConnectorConfiguration.class)
-public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
+public class RefCursorConnector implements Connector, CreateOp, UpdateOp, DeleteOp, SchemaOp, TestOp, SyncOp {
     // com.refcursorconnector.RefCursorConnector
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
@@ -38,7 +39,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  Delet
     @Override
     public void init(Configuration configuration) {
         LOG.info("[Connector] Starting initialization");
-        this.configuration = (RefCursorConnectorConfiguration)configuration;
+        this.configuration = (RefCursorConnectorConfiguration) configuration;
         this.configuration.init();
         try {
             this.connection = new RefCursorConnectorConnection(this.configuration);
