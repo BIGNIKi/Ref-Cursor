@@ -15,7 +15,7 @@ public class PostgresService {
      * Возвращает ref-cursor к текущей БД
      */
     public static ResultSet getRefCursor(Connection jbdcConnection) {
-        try(var stmt = jbdcConnection.createStatement()) {
+        try (var stmt = jbdcConnection.createStatement()) {
             stmt.execute("CREATE OR REPLACE FUNCTION refcursorfunc() RETURNS refcursor AS '" +
                     " DECLARE " +
                     "    mycurs refcursor; " +
@@ -56,7 +56,7 @@ public class PostgresService {
      * Возвращает схему для активного соединения с БД
      */
     public static ResultSetMetaData getScheme(Connection jbdcConnection) {
-        try(var stmt = jbdcConnection.createStatement()) {
+        try (var stmt = jbdcConnection.createStatement()) {
             final String SCHEMA_QUERY = "SELECT * FROM accounts WHERE id IS NULL";
             return stmt.executeQuery(SCHEMA_QUERY).getMetaData();
         } catch (SQLException e) {

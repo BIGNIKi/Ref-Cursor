@@ -31,7 +31,7 @@ public class RefCursorConnectorConnection {
         LOG.info("[Connector] midpoint host is {0}", configuration.getMidpointHostname());
     }
 
-    public void dispose()  {
+    public void dispose() {
         if (midpointClient != null) {
             midpointClient.dispose();
             midpointClient = null;
