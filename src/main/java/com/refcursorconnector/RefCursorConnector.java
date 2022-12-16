@@ -17,11 +17,12 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-@ConnectorClass(
-        displayNameKey = "refcursor.connector.display",
-        configurationClass = RefCursorConnectorConfiguration.class)
+
+/**
+ * ConnectorClass annotation that specifies the connector display name key and configuration class.
+ */
+@ConnectorClass(displayNameKey = "refcursor.connector.display", configurationClass = RefCursorConnectorConfiguration.class)
 public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
-    // com.refcursorconnector.RefCursorConnector
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
     private RefCursorConnectorConfiguration configuration;
