@@ -1,6 +1,7 @@
 package com.refcursorconnector;
 
 import com.evolveum.midpoint.client.api.Service;
+import com.evolveum.midpoint.client.api.exception.CommonException;
 import com.evolveum.midpoint.client.api.exception.ObjectNotFoundException;
 import com.evolveum.midpoint.client.api.exception.SchemaException;
 import com.evolveum.midpoint.client.impl.prism.RestPrismServiceBuilder;
@@ -8,19 +9,16 @@ import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
 import com.refcursorconnector.config.MidpointConfiguration;
 import org.identityconnectors.common.logging.Log;
 
-// TODO Переделать на вызовы REST api
-
 /**
  * Сервис для работы с midpoint client api
  */
 public class MidpointClient {
-    // com.refcursorconnector.MidpointClient
     public static final Log LOG = Log.getLog(MidpointClient.class);
 
     private Service client;
 
-    public MidpointClient(MidpointConfiguration configuration) throws Exception {
-        client = createClient(configuration);
+    public MidpointClient(MidpointConfiguration configuration, String host) throws Exception {
+        client = createClient(configuration, host);
     }
 
     /**
@@ -46,9 +44,13 @@ public class MidpointClient {
     public String addUser(UserType user) {
         try {
             LOG.info("[Connector] client is {0}", client);
-            var ref = client.users().add(user).post();
+            var collection = client.users().add(user);
+            var result = client.users().search().get();
+            LOG.info("[Connector] collection is {0}", result);
+            var ref = collection.post();
+            LOG.info("[Connector] ref is {0}", ref);
             return ref.getOid();
-        } catch (Exception e) {
+        } catch (CommonException e) {
             e.printStackTrace();
         }
 
@@ -81,12 +83,12 @@ public class MidpointClient {
         }
     }
 
-    private Service createClient(MidpointConfiguration configuration) throws Exception {
+    private Service createClient(MidpointConfiguration configuration, String host) throws Exception {
         RestPrismServiceBuilder builder = RestPrismServiceBuilder.create();
         LOG.info("[Connector] builder is {0}", builder);
         return builder.username(configuration.user)
                 .password(configuration.password)
-                .baseUrl(configuration.host)
+                .baseUrl(host)
                 .build();
     }
 }

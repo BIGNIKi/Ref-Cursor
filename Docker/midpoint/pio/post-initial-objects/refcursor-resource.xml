@@ -25,6 +25,7 @@
     <connectorConfiguration xmlns:icfc="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/connector-schema-3">
         <icfc:configurationProperties xmlns:gen66="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/bundle/com.refcursorconnector.connector-refcursor/com.refcursorconnector.RefCursorConnector">
             <gen66:hostname>http://refcursor:8080</gen66:hostname>
+            <gen66:midpointHostname>http://midpoint:8080/midpoint/ws/rest</gen66:midpointHostname>
         </icfc:configurationProperties>
     </connectorConfiguration>
 </resource>
