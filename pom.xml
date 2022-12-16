@@ -68,6 +68,15 @@
                     <target>10</target>
                 </configuration>
             </plugin>
+
+            <!-- Skip tests on packaging -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -95,12 +104,6 @@
             <groupId>com.evolveum.midpoint.client</groupId>
             <artifactId>midpoint-client-api</artifactId>
             <version>4.6</version>
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.evolveum.midpoint.infra</groupId>-->
-<!--                    <artifactId>schema-pure-jaxb</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
         </dependency>
 
     </dependencies>

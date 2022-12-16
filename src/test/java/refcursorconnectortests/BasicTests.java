@@ -31,7 +31,7 @@ public class BasicTests {
 
     @AfterClass
     public void shutdown() {
-        //connector.dispose();
+        connector.dispose();
     }
 
     @Test
