@@ -4,7 +4,9 @@ on:
     branches:
       - master
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - master
+    types: [opened]
 jobs:
   build:
     name: Build and analyze
