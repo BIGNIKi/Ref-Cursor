@@ -13,5 +13,7 @@
    `docker-compose -f ./docker-compose.yml down --volumes`
 5. To enable logging in midpoint go to `configuration -> system -> logging`. 
 Then `Class loggers tab`. And then add 3 rows with such values:
-- 
+- `com.refcursorconnector.RefCursorConnectorConnection`
+- `com.refcursorconnector.RefCursorConnector`
+- `com.refcursorconnector.MidpointClient`
 
