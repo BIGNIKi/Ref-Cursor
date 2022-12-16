@@ -152,7 +152,8 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  Delet
 
     @Override
     public void sync(ObjectClass objectClass, SyncToken syncToken, SyncResultsHandler syncResultsHandler, OperationOptions operationOptions) {
-
+        /* Polls the target resource for synchronization events, that is, native changes
+            to objects on the target resource. */
     }
 
     @Override
