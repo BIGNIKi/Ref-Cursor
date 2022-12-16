@@ -4,6 +4,8 @@ import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
 import org.apache.commons.lang3.NotImplementedException;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
+import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
@@ -16,7 +18,7 @@ import java.util.Set;
 @ConnectorClass(
         displayNameKey = "refcursor.connector.display",
         configurationClass = RefCursorConnectorConfiguration.class)
-public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
+public class RefCursorConnector implements Connector, SearchOp, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
     // com.refcursorconnector.RefCursorConnector
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
@@ -255,6 +257,34 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  Delet
             case Types.VARCHAR:
             default:
                 return String.class;
+        }
+    }
+
+    @Override
+    public FilterTranslator createFilterTranslator(ObjectClass objectClass, OperationOptions operationOptions) {
+        LOG.ok("createFilterTranslator::begin");
+        return new AbstractFilterTranslator<String>() {};
+    }
+
+    @Override
+    public void executeQuery(ObjectClass objectClass, Object o, ResultsHandler handler, OperationOptions operationOptions) {
+        try (var cursor = getConnection().getRefCursor()) {
+            while (cursor.next()) {
+                var id = cursor.getString(1);
+                var name = cursor.getString(2);
+                var object = new ConnectorObjectBuilder()
+                        .setUid(new Uid(id))
+                        .setName(name)
+                        .build();
+
+                if (!handler.handle(object)) {
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
