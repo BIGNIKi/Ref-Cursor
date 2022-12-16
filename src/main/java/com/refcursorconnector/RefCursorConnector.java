@@ -14,12 +14,13 @@ import org.identityconnectors.framework.spi.operations.*;
 import java.sql.Types;
 import java.sql.*;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @ConnectorClass(
         displayNameKey = "refcursor.connector.display",
         configurationClass = RefCursorConnectorConfiguration.class)
-public class RefCursorConnector implements Connector, SearchOp, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
+public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp, UpdateOp,  DeleteOp, SchemaOp, TestOp, SyncOp {
     // com.refcursorconnector.RefCursorConnector
     public static final Log LOG = Log.getLog(RefCursorConnector.class);
 
@@ -155,6 +156,7 @@ public class RefCursorConnector implements Connector, SearchOp, CreateOp, Update
 
     @Override
     public void sync(ObjectClass objectClass, SyncToken syncToken, SyncResultsHandler syncResultsHandler, OperationOptions operationOptions) {
+        LOG.info("[Connector sync]");
         /* Polls the target resource for synchronization events, that is, native changes
             to objects on the target resource. */
         /*
@@ -248,7 +250,8 @@ public class RefCursorConnector implements Connector, SearchOp, CreateOp, Update
 
     @Override
     public SyncToken getLatestSyncToken(ObjectClass objectClass) {
-        return null;
+        LOG.info("[Connector sync token]");
+        return new SyncToken(new Random());
     }
 
     private RefCursorConnectorConnection getConnection() throws Exception {
@@ -356,7 +359,7 @@ public class RefCursorConnector implements Connector, SearchOp, CreateOp, Update
     }
 
     @Override
-    public void executeQuery(ObjectClass objectClass, Object o, ResultsHandler handler, OperationOptions operationOptions) {
+    public void executeQuery(ObjectClass objectClass, String s, ResultsHandler handler, OperationOptions operationOptions) {
         try (var cursor = getConnection().getRefCursor()) {
             while (cursor.next()) {
                 var id = cursor.getString(1);
@@ -364,6 +367,7 @@ public class RefCursorConnector implements Connector, SearchOp, CreateOp, Update
                 var object = new ConnectorObjectBuilder()
                         .setUid(new Uid(id))
                         .setName(name)
+                        .setObjectClass(ObjectClass.ACCOUNT)
                         .build();
 
                 if (!handler.handle(object)) {
