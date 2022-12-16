@@ -4,10 +4,11 @@ import com.evolveum.midpoint.client.api.Service;
 import com.evolveum.midpoint.client.api.exception.CommonException;
 import com.evolveum.midpoint.client.api.exception.ObjectNotFoundException;
 import com.evolveum.midpoint.client.api.exception.SchemaException;
-import com.evolveum.midpoint.client.impl.prism.RestPrismServiceBuilder;
 import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
+import com.evolveum.prism.xml.ns._public.types_3.PolyStringType;
 import com.refcursorconnector.config.MidpointConfiguration;
 import org.identityconnectors.common.logging.Log;
+import com.evolveum.midpoint.client.impl.restjaxb.*;
 
 /**
  * Сервис для работы с midpoint client api
@@ -19,6 +20,10 @@ public class MidpointClient {
 
     public MidpointClient(MidpointConfiguration configuration, String host) throws Exception {
         client = createClient(configuration, host);
+    }
+
+    public PolyStringType createPoly(String source) {
+        return client.util().createPoly(source);
     }
 
     /**
@@ -45,8 +50,6 @@ public class MidpointClient {
         try {
             LOG.info("[Connector] client is {0}", client);
             var collection = client.users().add(user);
-            var result = client.users().search().get();
-            LOG.info("[Connector] collection is {0}", result);
             var ref = collection.post();
             LOG.info("[Connector] ref is {0}", ref);
             return ref.getOid();
@@ -84,11 +87,18 @@ public class MidpointClient {
     }
 
     private Service createClient(MidpointConfiguration configuration, String host) throws Exception {
-        RestPrismServiceBuilder builder = RestPrismServiceBuilder.create();
-        LOG.info("[Connector] builder is {0}", builder);
-        return builder.username(configuration.user)
+//        RestPrismServiceBuilder builder = RestPrismServiceBuilder.create();
+//        LOG.info("[Connector] builder is {0}", builder);
+//        return builder.username(configuration.user)
+//                .password(configuration.password)
+//                .baseUrl(host)
+//                .build();
+
+        return new RestJaxbServiceBuilder()
                 .password(configuration.password)
-                .baseUrl(host)
+                .url(configuration.host)
+                .username(configuration.user)
+                .authentication(AuthenticationType.BASIC)
                 .build();
     }
 }

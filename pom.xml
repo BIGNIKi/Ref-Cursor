@@ -95,7 +95,7 @@
 
         <dependency>
             <groupId>com.evolveum.midpoint.client</groupId>
-            <artifactId>midpoint-client-impl-prism</artifactId>
+            <artifactId>midpoint-client-impl-rest-jaxb</artifactId>
             <version>${midpoint.version}</version>
         </dependency>
 

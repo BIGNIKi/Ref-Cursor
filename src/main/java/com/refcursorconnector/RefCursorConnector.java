@@ -1,6 +1,7 @@
 package com.refcursorconnector;
 
 import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
+import com.evolveum.prism.xml.ns._public.types_3.PolyStringType;
 import com.refcursorconnector.models.SQLColumn;
 import org.apache.commons.lang3.NotImplementedException;
 import org.identityconnectors.common.CollectionUtil;
@@ -75,7 +76,8 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
 
             var name = cursor.getString(2);
             LOG.info("[Connector] user name {0}", name);
-            var user = new UserType().name(name);
+            var user = new UserType();
+            user.setName(client.createPoly(name));
             var oid = client.addUser(user);
             if (oid == null) {
                 throw new Exception("Couldn't add user");
@@ -128,7 +130,7 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
             var client = getMidpointClient();
 
             var name = cursor.getString(2);
-            var user = new UserType().name(name);
+            //var user = new UserType().name(name);
             var isDeleted = client.deleteUserByOid(uid.getUidValue());
             if (!isDeleted) {
                 throw new Exception("User wasn't deleted");

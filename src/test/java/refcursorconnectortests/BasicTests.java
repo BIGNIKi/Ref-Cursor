@@ -4,7 +4,6 @@ import com.refcursorconnector.PostgresService;
 import com.refcursorconnector.RefCursorConnectorConfiguration;
 import com.refcursorconnector.RefCursorConnectorConnection;
 import com.refcursorconnector.RefCursorConnector;
-import org.springframework.core.annotation.Order;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -35,14 +34,12 @@ public class BasicTests {
     }
 
     @Test
-    @Order(1)
     public void testScheme() {
         var schema = connector.schema();
         Assert.assertNotNull(schema);
     }
 
     @Test
-    @Order(2)
     public void testCreate() throws Exception {
         connector.create(null, null, null);
     }
