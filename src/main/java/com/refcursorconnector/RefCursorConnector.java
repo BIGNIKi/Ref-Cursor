@@ -250,10 +250,10 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp,  Delet
         switch (typeCode) {
             case Types.INTEGER:
                 return Integer.class;
-            case Types.BOOLEAN:
+            case Types.VARCHAR:
             case Types.BIT:
                 return Boolean.class;
-            case Types.VARCHAR:
+            case Types.BOOLEAN:
             default:
                 return String.class;
         }
