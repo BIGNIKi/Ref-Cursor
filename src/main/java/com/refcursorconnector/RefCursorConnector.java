@@ -42,10 +42,10 @@ public class RefCursorConnector implements Connector, CreateOp, UpdateOp, Delete
         this.configuration.init();
         try {
             this.connection = new RefCursorConnectorConnection(this.configuration);
-            PostgresService.initTable(getJbdcConnection());
+            //PostgresService.initTable(getJbdcConnection());
 
             LOG.info("[Connector] Try create");
-            this.create(null, null, null);
+            //this.create(null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
