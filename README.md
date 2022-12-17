@@ -16,4 +16,3 @@ Then `Class loggers tab`. And then add 3 rows with such values:
 - `com.refcursorconnector.RefCursorConnectorConnection`
 - `com.refcursorconnector.RefCursorConnector`
 - `com.refcursorconnector.MidpointClient`
-
