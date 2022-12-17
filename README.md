@@ -1,6 +1,7 @@
 # Ref-Cursor
 
 [sonar](https://sonarcloud.io/project/overview?id=ref-cursor)
+[jira](https://ref-cursor.atlassian.net/jira/projects?selectedProjectType=software)
 
 0. Ensure that tests are disabled. (Comment them)
 1. Build jar package
