@@ -90,13 +90,6 @@ public class MidpointClient {
     }
 
     private Service createClient(MidpointConfiguration configuration, String host) throws Exception {
-//        RestPrismServiceBuilder builder = RestPrismServiceBuilder.create();
-//        LOG.info("[Connector] builder is {0}", builder);
-//        return builder.username(configuration.user)
-//                .password(configuration.password)
-//                .baseUrl(host)
-//                .build();
-
         return new RestJaxbServiceBuilder()
                 .password(configuration.password)
                 .url(configuration.host)

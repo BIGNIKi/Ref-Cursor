@@ -108,25 +108,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
     public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> set, OperationOptions operationOptions) {
         LOG.info("[Connector] Start updating");
         throw new NotImplementedException("Not Implemented");
-//        try {
-//            var cursor = getConnection().getRefCursor();
-//            if (!cursor.next()) {
-//                throw new Exception("Source database is empty");
-//            }
-//
-//            var client = getMidpointClient();
-//
-//            var name = cursor.getString(2);
-//            var user = new UserType().name(name);
-//            var oid = client.addUser(user);
-//            if (oid == null) {
-//                throw new Exception("Couldn't update user");
-//            }
-//
-//            return new Uid(oid);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+	   // todo
     }
 
     @Override
