@@ -1,6 +1,10 @@
 package com.refcursorconnector;
 
 import com.evolveum.midpoint.xml.ns._public.common.common_3.UserType;
+import com.refcursorconnector.exeptions.DataBaseRunTimeException;
+import com.refcursorconnector.exeptions.DataBaseDeleteException;
+import com.refcursorconnector.exeptions.DataBaseEmptyException;
+import com.refcursorconnector.exeptions.DatabaseAddException;
 import org.apache.commons.lang3.NotImplementedException;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.objects.*;
@@ -31,8 +35,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
 
     private Schema schema;
 
-    private final String KEY_COLUMN = "name";
-    private final String PASSWORD_COLUMN = "password";
+    private static final String keyColumn = "name";
 
     @Override
     public Configuration getConfiguration() {
@@ -83,7 +86,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
         try {
             var cursor = getConnection().getRefCursor();
             if (!cursor.next()) {
-                throw new Exception("Source database is empty");
+                throw new DataBaseEmptyException("Source database is empty");
             }
 
             var client = getMidpointClient();
@@ -95,12 +98,12 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
             user.setName(client.createPoly(name));
             var oid = client.addUser(user);
             if (oid == null) {
-                throw new Exception("Couldn't add user");
+                throw new DatabaseAddException("Couldn't add user");
             }
 
             return new Uid(oid);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DataBaseRunTimeException(e);
         }
     }
 
@@ -108,7 +111,6 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
     public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> set, OperationOptions operationOptions) {
         LOG.info("[Connector] Start updating");
         throw new NotImplementedException("Not Implemented");
-	   // todo
     }
 
     @Override
@@ -121,19 +123,17 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
         try {
             var cursor = getConnection().getRefCursor();
             if (!cursor.next()) {
-                throw new Exception("Source database is empty");
+                throw new DataBaseEmptyException("Source database is empty");
             }
 
             var client = getMidpointClient();
 
-            var name = cursor.getString(2);
-            //var user = new UserType().name(name);
             var isDeleted = client.deleteUserByOid(uid.getUidValue());
             if (!isDeleted) {
-                throw new Exception("User wasn't deleted");
+                throw new DataBaseDeleteException("User wasn't deleted");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DataBaseRunTimeException(e);
         }
     }
 
@@ -296,7 +296,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
             final var builder = new AttributeInfoBuilder();
             builder.setType(getType(columnType));
 
-            if (columnName.equalsIgnoreCase(KEY_COLUMN)) {
+            if (columnName.equalsIgnoreCase(keyColumn)) {
                 builder.setName(Name.NAME);
                 builder.setRequired(true);
             } else {

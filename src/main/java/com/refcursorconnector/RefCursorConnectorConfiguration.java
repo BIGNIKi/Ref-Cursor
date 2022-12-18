@@ -14,7 +14,7 @@ public class RefCursorConnectorConfiguration extends AbstractConfiguration {
 
     @Override
     public void validate() {
-        // TODO implement
+
     }
 
     @ConfigurationProperty(displayMessageKey = "hostname (e.g. http://refcursor:8080)",

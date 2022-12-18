@@ -10,6 +10,8 @@ import com.refcursorconnector.config.MidpointConfiguration;
 import org.identityconnectors.common.logging.Log;
 import com.evolveum.midpoint.client.impl.restjaxb.*;
 
+import java.io.IOException;
+
 /**
  * Сервис для работы с midpoint client api
  */
@@ -89,7 +91,7 @@ public class MidpointClient {
         }
     }
 
-    private Service createClient(MidpointConfiguration configuration, String host) throws Exception {
+    private Service createClient(MidpointConfiguration configuration, String host) throws IOException {
         return new RestJaxbServiceBuilder()
                 .password(configuration.password)
                 .url(configuration.host)
