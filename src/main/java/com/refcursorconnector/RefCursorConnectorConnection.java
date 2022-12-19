@@ -2,6 +2,7 @@ package com.refcursorconnector;
 
 import org.identityconnectors.common.logging.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,24 +11,33 @@ import java.sql.SQLException;
 public class RefCursorConnectorConnection {
     public static final Log LOG = Log.getLog(RefCursorConnectorConnection.class);
 
-    private Connection jbdcConnection;
+    private Connection jdbcConnection;
 
     private MidpointClient midpointClient;
 
     private ResultSet refcursor;
 
-    private RefCursorConnectorConfiguration configuration;
 
-    public RefCursorConnectorConnection(RefCursorConnectorConfiguration configuration) throws Exception {
-        this.configuration = configuration;
-
-        Class.forName("org.postgresql.Driver");
+    public RefCursorConnectorConnection(RefCursorConnectorConfiguration configuration) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         var postgres = configuration.getPostgresConfiguration();
         LOG.info("[Connector] init connection " + postgres.host + " : " + postgres.user + " : " + postgres.password);
-        this.jbdcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+        try {
+            this.jdbcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
-        this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration(), configuration.getMidpointHostname());
+        try {
+            this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         LOG.info("[Connector] midpoint host is {0}", configuration.getMidpointHostname());
     }
 
@@ -37,18 +47,18 @@ public class RefCursorConnectorConnection {
             midpointClient = null;
         }
 
-        if (jbdcConnection != null) {
+        if (jdbcConnection != null) {
             try {
-                jbdcConnection.close();
+                jdbcConnection.close();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            jbdcConnection = null;
+            jdbcConnection = null;
         }
     }
 
-    public Connection getJbdcConnection() {
-        return jbdcConnection;
+    public Connection getJdbcConnection() {
+        return jdbcConnection;
     }
 
     /**
@@ -60,7 +70,7 @@ public class RefCursorConnectorConnection {
             return refcursor;
         }
 
-        refcursor = PostgresService.getRefCursor(jbdcConnection);
+        refcursor = PostgresService.getRefCursor(jdbcConnection);
         return refcursor;
     }
 

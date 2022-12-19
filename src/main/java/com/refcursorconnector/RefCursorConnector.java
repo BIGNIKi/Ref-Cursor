@@ -35,7 +35,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
 
     private Schema schema;
 
-    private static final String keyColumn = "name";
+    private static final String KEY_COLUMN = "name";
 
     @Override
     public Configuration getConfiguration() {
@@ -140,95 +140,6 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
     @Override
     public void sync(ObjectClass objectClass, SyncToken syncToken, SyncResultsHandler syncResultsHandler, OperationOptions operationOptions) {
         LOG.info("[Connector sync]");
-        /* Polls the target resource for synchronization events, that is, native changes
-            to objects on the target resource. */
-        /*
-        log.info("check the ObjectClass and result handler");
-        // Contract tests
-        if (oclass == null || (!oclass.equals(ObjectClass.ACCOUNT))) {
-            throw new IllegalArgumentException(config.getMessage(MSG_ACCOUNT_OBJECT_CLASS_REQUIRED));
-        }
-        log.ok("The object class is ok");
-        if (handler == null) {
-            throw new IllegalArgumentException(config.getMessage(MSG_RESULT_HANDLER_NULL));
-        }
-        log.ok("The result handles is not null");
-        //check if password column is defined in the config
-        if (StringUtil.isBlank(config.getChangeLogColumn())) {
-            throw new IllegalArgumentException(config.getMessage(MSG_CHANGELOG_COLUMN_BLANK));
-        }
-        log.ok("The change log column is ok");
-
-        // Names
-        final String tblname = config.getTable();
-        final String changeLogColumnName = quoteName(config.getChangeLogColumn());
-        log.ok("Change log attribute {0} map to column name {1}", config.getChangeLogColumn(), changeLogColumnName);
-        final Set<String> columnNames = resolveColumnNamesToGet(options);
-        log.ok("Column Names {0} To Get", columnNames);
-
-        final List<OrderBy> orderBy = new ArrayList<>();
-        //Add also the token column
-        columnNames.add(changeLogColumnName);
-
-        //Set ORDER BY on Sync Data
-        String syncOrderByColumnName = changeLogColumnName;
-        if (StringUtil.isNotBlank(config.getSyncOrderColumn())) {
-            syncOrderByColumnName = config.getSyncOrderColumn();
-        }
-        Boolean syncOrderByAsc = true;
-        if (config.getSyncOrderAsc() != null) {
-            syncOrderByAsc = config.getSyncOrderAsc();
-        }
-
-        orderBy.add(new OrderBy(syncOrderByColumnName, syncOrderByAsc));
-        log.ok("OrderBy {0}", orderBy);
-
-        // The first token is not null set the FilterWhereBuilder
-        final FilterWhereBuilder where = new FilterWhereBuilder();
-        if (token != null && token.getValue() != null) {
-            final Object tokenVal = token.getValue();
-            log.info("Sync token is {0}", tokenVal);
-            final SQLColumnTypeInfo sqlColumnTypeinfo = getColumnTypeInfo(config.getChangeLogColumn());
-            where.addBind(new SQLParam(changeLogColumnName, tokenVal, sqlColumnTypeinfo.getTypeCode(), sqlColumnTypeinfo.getTypeName()), ">");
-        }
-        final DatabaseQueryBuilder query = new DatabaseQueryBuilder(tblname, columnNames);
-        query.setWhere(where);
-        query.setOrderBy(orderBy);
-
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        try {
-            openConnection();
-
-            statement = getConn().prepareStatement(query);
-            result = statement.executeQuery();
-            log.info("execute sync query {0} on {1}", query.getSQL(), oclass);
-            while (result.next()) {
-                final Map<String, SQLParam> columnValues = getConn().getColumnValues(result);
-                log.ok("Column values {0} from sync result set ", columnValues);
-
-                // create the connector object..
-                final SyncDeltaBuilder sdb = buildSyncDelta(columnValues);
-                if (!handler.handle(sdb.build())) {
-                    log.ok("Stop processing of the sync result set");
-                    break;
-                }
-            }
-            // commit changes
-            log.info("commit sync account");
-            commit();
-        } catch (SQLException e) {
-
-            SQLUtil.rollbackQuietly(getConn());
-            evaluateAndHandleException(e, false, true, false, MSG_CAN_NOT_READ, tblname);
-        } finally {
-            IOUtil.quietClose(result);
-            IOUtil.quietClose(statement);
-
-            closeConnection();
-        }
-        log.ok("Sync Account committed");
-         */
     }
 
     @Override
@@ -237,7 +148,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
         return new SyncToken(new Random());
     }
 
-    private RefCursorConnectorConnection getConnection() throws Exception {
+    private RefCursorConnectorConnection getConnection(){
         if (connection != null) {
             return connection;
         }
@@ -251,8 +162,8 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
         return getConnection().getMidpointClient();
     }
 
-    private Connection getJbdcConnection() throws Exception {
-        return getConnection().getJbdcConnection();
+    private Connection getJbdcConnection() {
+        return getConnection().getJdbcConnection();
     }
 
     @Override
@@ -280,10 +191,10 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
         return builder.build();
     }
 
-    private Set<AttributeInfo> buildSelectBasedAttributeInfos() throws Exception {
+    private Set<AttributeInfo> buildSelectBasedAttributeInfos() throws SQLException {
         var metaData = PostgresService.getScheme(getJbdcConnection());
         if (metaData == null) {
-            throw new RuntimeException("SQL query returned null");
+            throw new SQLException("SQL query returned null");
         }
 
         var attributes = new HashSet<AttributeInfo>();
@@ -296,7 +207,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
             final var builder = new AttributeInfoBuilder();
             builder.setType(getType(columnType));
 
-            if (columnName.equalsIgnoreCase(keyColumn)) {
+            if (columnName.equalsIgnoreCase(KEY_COLUMN)) {
                 builder.setName(Name.NAME);
                 builder.setRequired(true);
             } else {
@@ -314,9 +225,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
     public void test() {
         LOG.info("[Connector] Start testing");
         try {
-            //PostgresService.initTable(getJbdcConnection());
             LOG.info("[Connector] Try create");
-            //this.create(null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -358,8 +267,6 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }

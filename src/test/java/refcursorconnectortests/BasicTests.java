@@ -31,7 +31,7 @@ public class BasicTests {
         Assert.assertEquals(configuration, connector.getConfiguration());
 
         var connection = new RefCursorConnectorConnection(configuration);
-        PostgresService.initTable(connection.getJbdcConnection());
+        PostgresService.initTable(connection.getJdbcConnection());
 
         Assert.assertNotNull(connector.getConfiguration());
 

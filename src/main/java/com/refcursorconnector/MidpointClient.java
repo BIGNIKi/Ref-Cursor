@@ -20,8 +20,8 @@ public class MidpointClient {
 
     private Service client;
 
-    public MidpointClient(MidpointConfiguration configuration, String host) throws Exception {
-        client = createClient(configuration, host);
+    public MidpointClient(MidpointConfiguration configuration) throws IOException {
+        client = createClient(configuration);
     }
 
     public PolyStringType createPoly(String source) {
@@ -91,7 +91,7 @@ public class MidpointClient {
         }
     }
 
-    private Service createClient(MidpointConfiguration configuration, String host) throws IOException {
+    private Service createClient(MidpointConfiguration configuration) throws IOException {
         return new RestJaxbServiceBuilder()
                 .password(configuration.password)
                 .url(configuration.host)
