@@ -11,3 +11,4 @@
 4. Download maven from https://maven.apache.org/. Unzip to C:\Program Files (x86)
 5. Add to path C:\Program Files (x86)\apache-maven-3.8.6\bin
 6. `make run` root folder of the repo.
+7. Use ```docker-compose -f ./Docker/docker-compose.yml down --volumes``` to stop container.
