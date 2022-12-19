@@ -1,5 +1,6 @@
 package com.refcursorconnector;
 
+import com.refcursorconnector.config.PostgresConfiguration;
 import org.identityconnectors.common.logging.Log;
 
 import java.io.IOException;
@@ -26,10 +27,9 @@ public class RefCursorConnectorConnection {
             return;
         }
 
-        var postgres = configuration.getPostgresConfiguration();
-        LOG.info("[Connector] init connection " + postgres.host + " : " + postgres.user + " : " + postgres.password);
+        LOG.info("[Connector] init connection " + PostgresConfiguration.host + " : " + PostgresConfiguration.user + " : " + PostgresConfiguration.password);
         try {
-            this.jdbcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
+            this.jdbcConnection = DriverManager.getConnection(PostgresConfiguration.host, PostgresConfiguration.user, PostgresConfiguration.password);
         } catch (SQLException e) {
             e.printStackTrace();
             return;

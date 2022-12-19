@@ -38,8 +38,7 @@ public class RefCursorConnectorConfiguration extends AbstractConfiguration {
     }
 
     public void init() {
-        postgresConfiguration = new PostgresConfiguration();
-        midpointConfiguration = new MidpointConfiguration();
+        
     }
 
     public PostgresConfiguration getPostgresConfiguration() {
