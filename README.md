@@ -6,4 +6,8 @@
 ## How to run
 
 1. Ensure docker is running on your system.
-2. `make run` in cmd
+2. For Windows OS: ```winget install GnuWin32.Make```
+3. Add to path C:\Program Files (x86)\GnuWin32\bin
+4. Download maven from https://maven.apache.org/. Unzip to C:\Program Files (x86)
+5. Add to path C:\Program Files (x86)\apache-maven-3.8.6\bin
+6. `make run` root folder of the repo.
