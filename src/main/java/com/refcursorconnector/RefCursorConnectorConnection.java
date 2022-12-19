@@ -20,13 +20,6 @@ public class RefCursorConnectorConnection {
 
 
     public RefCursorConnectorConnection(RefCursorConnectorConfiguration configuration) {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-
         LOG.info("[Connector] init connection " + PostgresConfiguration.HOST + " : " + PostgresConfiguration.USER + " : " + PostgresConfiguration.PASSWORD);
         try {
             this.jdbcConnection = DriverManager.getConnection(PostgresConfiguration.HOST, PostgresConfiguration.USER, PostgresConfiguration.PASSWORD);

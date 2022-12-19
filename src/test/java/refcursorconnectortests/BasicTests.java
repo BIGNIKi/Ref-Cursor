@@ -25,7 +25,6 @@ public class BasicTests {
     public void setUpBeforeClass() throws Exception {
         connector = new RefCursorConnector();
         var configuration = new RefCursorConnectorConfiguration();
-        configuration.init();
 
         connector.init(configuration);
         Assert.assertEquals(configuration, connector.getConfiguration());

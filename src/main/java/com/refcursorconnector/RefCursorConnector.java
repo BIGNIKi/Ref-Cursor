@@ -47,7 +47,6 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
     public void init(Configuration configuration) {
         LOG.info("[Connector] Starting initialization");
         this.configuration = (RefCursorConnectorConfiguration) configuration;
-        this.configuration.init();
         try {
             this.connection = new RefCursorConnectorConnection(this.configuration);
             PostgresService.initTable(getJbdcConnection());

@@ -37,10 +37,6 @@ public class RefCursorConnectorConfiguration extends AbstractConfiguration {
         this.midpointHostname = value;
     }
 
-    public void init() {
-        
-    }
-
     public PostgresConfiguration getPostgresConfiguration() {
         return postgresConfiguration;
     }
