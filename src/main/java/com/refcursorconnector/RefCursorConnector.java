@@ -158,7 +158,7 @@ public class RefCursorConnector implements Connector, SearchOp<String>, CreateOp
         return connection;
     }
 
-    private MidpointClient getMidpointClient() throws Exception {
+    private MidpointClient getMidpointClient() {
         return getConnection().getMidpointClient();
     }
 

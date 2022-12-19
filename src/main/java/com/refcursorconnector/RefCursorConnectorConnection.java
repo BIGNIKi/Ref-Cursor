@@ -22,7 +22,8 @@ public class RefCursorConnectorConnection {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return;
         }
 
         var postgres = configuration.getPostgresConfiguration();
@@ -30,13 +31,15 @@ public class RefCursorConnectorConnection {
         try {
             this.jdbcConnection = DriverManager.getConnection(postgres.host, postgres.user, postgres.password);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return;
         }
 
         try {
             this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return;
         }
         LOG.info("[Connector] midpoint host is {0}", configuration.getMidpointHostname());
     }
@@ -51,7 +54,8 @@ public class RefCursorConnectorConnection {
             try {
                 jdbcConnection.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                return;
             }
             jdbcConnection = null;
         }
