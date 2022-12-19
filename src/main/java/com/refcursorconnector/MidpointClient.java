@@ -93,9 +93,9 @@ public class MidpointClient {
 
     private Service createClient() throws IOException {
         return new RestJaxbServiceBuilder()
-                .password(MidpointConfiguration.password)
-                .url(MidpointConfiguration.host)
-                .username(MidpointConfiguration.user)
+                .password(MidpointConfiguration.PASSWORD)
+                .url(MidpointConfiguration.HOST)
+                .username(MidpointConfiguration.USER)
                 .authentication(AuthenticationType.BASIC)
                 .build();
     }

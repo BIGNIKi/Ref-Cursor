@@ -27,9 +27,9 @@ public class RefCursorConnectorConnection {
             return;
         }
 
-        LOG.info("[Connector] init connection " + PostgresConfiguration.host + " : " + PostgresConfiguration.user + " : " + PostgresConfiguration.password);
+        LOG.info("[Connector] init connection " + PostgresConfiguration.HOST + " : " + PostgresConfiguration.USER + " : " + PostgresConfiguration.PASSWORD);
         try {
-            this.jdbcConnection = DriverManager.getConnection(PostgresConfiguration.host, PostgresConfiguration.user, PostgresConfiguration.password);
+            this.jdbcConnection = DriverManager.getConnection(PostgresConfiguration.HOST, PostgresConfiguration.USER, PostgresConfiguration.PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
             return;
