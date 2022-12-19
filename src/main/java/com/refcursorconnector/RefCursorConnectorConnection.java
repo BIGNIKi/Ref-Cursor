@@ -36,7 +36,7 @@ public class RefCursorConnectorConnection {
         }
 
         try {
-            this.midpointClient = new MidpointClient(configuration.getMidpointConfiguration());
+            this.midpointClient = new MidpointClient();
         } catch (IOException e) {
             e.printStackTrace();
             return;

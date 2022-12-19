@@ -20,8 +20,8 @@ public class MidpointClient {
 
     private Service client;
 
-    public MidpointClient(MidpointConfiguration configuration) throws IOException {
-        client = createClient(configuration);
+    public MidpointClient() throws IOException {
+        client = createClient();
     }
 
     public PolyStringType createPoly(String source) {
@@ -91,11 +91,11 @@ public class MidpointClient {
         }
     }
 
-    private Service createClient(MidpointConfiguration configuration) throws IOException {
+    private Service createClient() throws IOException {
         return new RestJaxbServiceBuilder()
-                .password(configuration.password)
-                .url(configuration.host)
-                .username(configuration.user)
+                .password(MidpointConfiguration.password)
+                .url(MidpointConfiguration.host)
+                .username(MidpointConfiguration.user)
                 .authentication(AuthenticationType.BASIC)
                 .build();
     }
